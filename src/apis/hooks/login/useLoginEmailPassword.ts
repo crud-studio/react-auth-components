@@ -1,11 +1,8 @@
-import {LoginRO} from "../../../models/server";
 import {GenericRequestState, useGenericRequest} from "@crud-studio/react-crud-core";
+import {AuthResponseRO} from "../../../models/server";
 
-function useLoginEmailPassword(
-  email: string,
-  password: string,
-): GenericRequestState<LoginRO> {
-  return useGenericRequest<LoginRO>(
+function useLoginEmailPassword(email: string, password: string): GenericRequestState<AuthResponseRO> {
+  return useGenericRequest<AuthResponseRO>(
     {
       url: `/auth/login/EmailPassword`,
       method: "POST",

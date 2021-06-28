@@ -1,4 +1,4 @@
-
-export interface LoginRO {
+export interface AuthResponseRO {
+  entityUuid: string;
   token: string;
 }

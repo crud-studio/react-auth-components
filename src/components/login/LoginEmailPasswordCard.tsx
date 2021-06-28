@@ -1,16 +1,21 @@
 import {Controller, useForm, useWatch} from "react-hook-form";
 import React, {FunctionComponent} from "react";
 import {Avatar, Box, Paper, TextField, Typography} from "@material-ui/core";
-import {LockOutlined} from "@material-ui/icons";
+import {LoginOutlined} from "@material-ui/icons";
 import {FormattedMessage, useIntl} from "react-intl";
-import {EMAIL_REGEX, StatusButton} from "@crud-studio/react-crud-components";
+import {ConditionalLink, EMAIL_REGEX, StatusButton} from "@crud-studio/react-crud-components";
 import InputUtils from "../../helpers/InputUtils";
 import useLoginEmailPassword from "../../apis/hooks/login/useLoginEmailPassword";
-import {LoginRO} from "../../models/server";
 import {useUpdateEffect} from "react-use";
+import {AuthResponseRO} from "../../models/server";
 
 interface IProps {
-  onLoginSuccess: (result: LoginRO) => void;
+  logoSrc?: string;
+  logoUrl?: string;
+  logoHeight?: number;
+  titleKey?: string;
+  subtitleKey?: string;
+  onLoginSuccess: (authResponse: AuthResponseRO) => void;
 }
 
 type FormValues = {
@@ -18,7 +23,14 @@ type FormValues = {
   password: string;
 };
 
-const LoginEmailPasswordCard: FunctionComponent<IProps> = ({onLoginSuccess}) => {
+const LoginEmailPasswordCard: FunctionComponent<IProps> = ({
+  logoSrc,
+  logoUrl,
+  logoHeight,
+  titleKey,
+  subtitleKey,
+  onLoginSuccess,
+}) => {
   const intl = useIntl();
 
   const {
@@ -39,7 +51,7 @@ const LoginEmailPasswordCard: FunctionComponent<IProps> = ({onLoginSuccess}) => 
     if (loginState.result) {
       onLoginSuccess(loginState.result);
     }
-  }, [loginState.result])
+  }, [loginState.result]);
 
   const onSubmit = handleSubmit((data): void => {
     loginState.executeRequest();
@@ -55,14 +67,22 @@ const LoginEmailPasswordCard: FunctionComponent<IProps> = ({onLoginSuccess}) => 
         p: 4,
       }}
     >
-      <Avatar sx={{mb: 1, bgcolor: "primary.main"}}>
-        <LockOutlined />
-      </Avatar>
+      <Box sx={{mb: 2}}>
+        {!!logoSrc ? (
+          <ConditionalLink to={logoUrl || "/"} condition={!!logoUrl}>
+            <img src={logoSrc} alt="Logo" height={logoHeight || 30} />
+          </ConditionalLink>
+        ) : (
+          <Avatar sx={{mb: 1, bgcolor: "primary.main"}}>
+            <LoginOutlined />
+          </Avatar>
+        )}
+      </Box>
       <Typography component="h1" variant="h2" sx={{textAlign: "center"}}>
-        <FormattedMessage id="pages.connect-title" />
+        <FormattedMessage id={titleKey || "pages.connect-title"} />
       </Typography>
       <Typography component="div" variant="body2" sx={{textAlign: "center"}}>
-        <FormattedMessage id="pages.connect-subtitle" />
+        <FormattedMessage id={subtitleKey || "pages.connect-subtitle"} />
       </Typography>
       <Box component="form" onSubmit={onSubmit} noValidate sx={{mt: 1, width: "100%"}}>
         <Controller
